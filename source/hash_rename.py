@@ -121,7 +121,7 @@ def main() -> None:
         metavar=''
     )
     parser.add_argument(
-        '-e',
+        '-x',
         '--exclude',
         action='extend',
         nargs='+',
