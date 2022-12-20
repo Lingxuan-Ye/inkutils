@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-python ../source/hash_rename.py $*
