@@ -93,8 +93,11 @@ def statistics(
 
     stats = _Stats()
     for i in filter(path, include, exclude, recursive):
-        with open(i, encoding='utf-8') as f:
-            _raw = f.read()
+        try:
+            with open(i, encoding='utf-8') as f:
+                _raw = f.read()
+        except UnicodeDecodeError:
+            continue
         _stats = _Stats(str(path), '-')
         _groups: list[tuple[str, ...]] = re.findall(
             r'([\u4E00-\u9FFF])|'
