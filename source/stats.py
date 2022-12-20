@@ -98,7 +98,7 @@ def statistics(
                 _raw = f.read()
         except UnicodeDecodeError:
             continue
-        _stats = _Stats(str(path), '-')
+        _stats = _Stats(str(i), '-')
         _groups: list[tuple[str, ...]] = re.findall(
             r'([\u4E00-\u9FFF])|'
             r'([\u3400-\u4DBF\U00020000-\U0002A6DF\U0002A700-\U0002EBEF\U00030000-\U0003134F])|'
@@ -111,6 +111,10 @@ def statistics(
             r'(.)',
             _raw
         )
+
+        if not _groups:
+            continue
+
         for j, k, l, m, n, o, p, _, q, r in _groups:
             # note that bool('') is False
             if j:  # CJK Unified Ideographs
@@ -157,8 +161,8 @@ def statistics(
     message = str(stats)
 
     if verbose:
-        message += '\n\n' + '\n'.join((
-            f"DETAILS\n{'=' * 40}\n",
+        message += '\n\n\n' + '\n\n'.join((
+            f"DETAILS\n{'=' * 36}\n",
             *(str(i) for i in inventory)
         ))
 
