@@ -21,7 +21,7 @@ class Pavlov:
 
     @property
     def prolog(self) -> str:
-        return self.__prolog + '\n'
+        return self.__prolog
 
     @prolog.setter
     def prolog(self, __value: str) -> None:
@@ -29,7 +29,7 @@ class Pavlov:
 
     @property
     def epilog(self) -> str:
-        return self.__epilog + '\n'
+        return self.__epilog
 
     @epilog.setter
     def epilog(self, __value: str) -> None:

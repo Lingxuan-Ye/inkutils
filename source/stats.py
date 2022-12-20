@@ -48,11 +48,11 @@ class _Stats(Counter):
 
     @property
     def seps(self) -> str:
-        return self.__sep * 40 + '\n'
+        return self.__sep * 36 + '\n'
 
     def line(self, key: str, name: Optional[str] = None) -> str:
         name = key.title() if name is None else name
-        return f'{name + ":":<32}{self[key]:>8}\n'
+        return f'{name + ":":<28}{self[key]:>8}\n'
 
     def __str__(self) -> str:
         return ''.join((
@@ -192,7 +192,7 @@ class _Help:
 @Pavlov()
 def main():
     parser = argparse.ArgumentParser('Stats')
-    parser.add_argument('path', help=_Help.path)
+    parser.add_argument('path', nargs='?', help=_Help.path)
     parser.add_argument(
         '-i',
         '--include',
