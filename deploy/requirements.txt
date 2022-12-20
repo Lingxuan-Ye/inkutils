@@ -1,0 +1,7 @@
+json5
+mypy
+numpy
+pyperclip
+PyYAML
+requests
+yapf
