@@ -1,0 +1,16 @@
+[core]
+	autocrlf = input
+	safecrlf = warn
+	ignorecase = false
+	quotepath = false
+	editor = code --wait
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[user]
+	email = lingxuan.ye@icloud.com
+	name = Lingxuan Ye
+[init]
+	defaultBranch = main
