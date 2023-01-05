@@ -18,6 +18,7 @@ def rename(
     exclude: Optional[Iterable[str]] = None,
     prefix: Optional[str] = None,
     drop_suffix: bool = False,
+    case_: Literal['lower', 'upper', 'keep'] = 'lower',
     flatten: bool = False,
     algorithm: Literal['md5', 'sha1', 'sha256', 'sha512'] = 'sha256',
     quiet: bool = False
@@ -41,6 +42,8 @@ def rename(
         Prefix before hash digest. May be expansible in future version.
     drop_suffix :
         If True, drop file suffix.
+    case_ :
+        Set file name case.
     flatten :
         If True, extract renamed files in subdirectories to working directory.
     algorithm :
@@ -59,9 +62,20 @@ def rename(
     for i in filter(path, include, exclude):
         parent = Path() if flatten else path.parent
         suffix = '' if drop_suffix else ''.join(i.suffixes)
-        new = path.rename(
-            parent / (prefix + hexdigest(path, algorithm) + suffix)
-        )
+        name = prefix + hexdigest(path, algorithm) + suffix
+        match case_.lower():
+            case 'lower':
+                name = name.lower()
+            case 'upper':
+                name = name.upper()
+            case 'keep':
+                pass
+            case _:
+                raise ValueError(
+                    f"value '{case_}' is invalid, "
+                    "expect 'lower', 'upper' or 'keep'."
+                )
+        new = path.rename(parent / name)
         if not quiet:
             print(f"'{path}' -> '{new}'.", end='\n\n')
 
@@ -93,14 +107,17 @@ class _Help:
         if specified, drop file suffix
     """
 
+    case = """
+        set file name case (available: 'lower', 'upper' and 'keep')
+    """
+
     flatten = """
         if specified, extract renamed files in subdirectories to
         working directory
     """
 
     algorithm = """
-        hash algorithm (available: 'md5', 'sha1', 'sha256' and 'sha512');
-        use 'sha256' if invalid value passed in
+        hash algorithm (available: 'md5', 'sha1', 'sha256' and 'sha512')
     """
 
     quiet = """
@@ -136,6 +153,14 @@ def main() -> None:
         help=_Help.drop_suffix
     )
     parser.add_argument(
+        '-c',
+        '--case',
+        choices=('lower', 'upper', 'keep'),
+        default='lower',
+        help=_Help.case,
+        metavar=''
+    )
+    parser.add_argument(
         '-f',
         '--flatten',
         action='store_true',
@@ -168,6 +193,7 @@ def main() -> None:
             args.exclude,
             args.prefix,
             args.drop_suffix,
+            args.case,
             args.flatten,
             args.algorithm,
             args.quiet
