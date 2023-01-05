@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 
-## create symbolic link for dotfiles
+# deploy dotfiles
+rm -r -f ~/.bashrc
 ln -s ~/inkutils/dotfiles/.bashrc ~/.bashrc
+rm -r -f ~/.gitconfig
 ln -s ~/inkutils/dotfiles/.gitconfig ~/.gitconfig
 
-## create venv
+# create venv
 rm -r -f ~/venv/ink/ && python -m venv ~/venv/ink/
 
-## activate venv
+# activate venv
 source ~/venv/ink/Scripts/activate
 
-## upgrade pip
+# upgrade pip
 pip install --upgrade pip
 
-## install site-packages
+# install site-packages
 pip install -r ./requirements.txt
 
 # exit prompt
