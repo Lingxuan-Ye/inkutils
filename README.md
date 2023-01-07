@@ -7,7 +7,11 @@
 ## 安装
 
 ```shell
-git clone https://github.com/Lingxuan-Ye/inkutils.git ~/inkutils/
+rm -r -f ~/inkutils/ && \
+
+git clone https://github.com/Lingxuan-Ye/inkutils.git ~/inkutils/ && \
+
+~/inkutils/deploy.sh
 ```
 
 ## 注意
