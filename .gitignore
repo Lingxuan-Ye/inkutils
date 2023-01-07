@@ -2,13 +2,11 @@
 
 ## Include (ignore)
 _
-_[!_]*
 _*/*
 ?.py
 ?.ipynb
 
 ## Exclude (not ignore)
-!*.sh
 !.gitkeep
 !.gitignore
 
