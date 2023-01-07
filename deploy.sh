@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+# get absolute path of 'inkutils'
+bash ./locate.sh
+dir="$( cat ~/.inkpath )"
+
 # deploy dotfiles
 rm -r -f ~/.bashrc
-ln -s ~/inkutils/dotfiles/.bashrc ~/.bashrc
+ln -s "$dir/dotfiles/.bashrc" ~/.bashrc
 rm -r -f ~/.gitconfig
-ln -s ~/inkutils/dotfiles/.gitconfig ~/.gitconfig
+ln -s "$dir/dotfiles/.gitconfig" ~/.gitconfig
 
 # create venv
 rm -r -f ~/venv/ink/ && python -m venv ~/venv/ink/

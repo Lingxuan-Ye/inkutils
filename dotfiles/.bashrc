@@ -8,7 +8,7 @@
 # Auto-launching `ssh-agent` on Git for Windows
 # ----------------------------------------------------------------
 
-if [[ "$(uname)" == "MINGW*" ]]; then
+if [[ "$(uname)" = "MINGW*" ]]; then
 
     env=~/.ssh/agent.env
 
@@ -49,11 +49,18 @@ shopt -s globstar
 
 
 # ----------------------------------------------------------------
+# Get absolute path of 'inkutils'
+# ----------------------------------------------------------------
+
+dir="$( cat ~/.inkpath )"
+
+
+# ----------------------------------------------------------------
 # Exports
 # ----------------------------------------------------------------
 
-export PATH=$HOME/inkutils/scripts/:$HOME/.scripts/:$PATH
-export PYTHONPATH=$HOME/inkutils/packages/python/:$HOME/.packages/:$PYTHONPATH
+export PATH="$dir/scripts/":$HOME/scripts/:$PATH
+export PYTHONPATH="$dir/packages/python/":$HOME/packages/:$PYTHONPATH
 export USERNAME="Lingxuan Ye"
 export NICKNAME="inknos"
 
@@ -62,12 +69,19 @@ export NICKNAME="inknos"
 # Alias
 # ----------------------------------------------------------------
 
-alias clean="~/inkutils/scripts/clean.sh"
+alias clean="$dir/scripts/clean.sh"
 alias cry="python -m crypto $@"
-alias harn="python ~/inkutils/packages/python/hash_rename.py $@"
-alias stats="python ~/inkutils/packages/python/stats.py $@"
+alias rn="python $dir/packages/python/hash_rename.py $@"
+alias stats="python $dir/packages/python/stats.py $@"
 alias sv="ifconfig || ipconfig && python -m http.server $@"
-alias venv="source ~/inkutils/scripts/venv.sh $@"
+alias venv="source $dir/scripts/venv.sh $@"
+
+
+# ----------------------------------------------------------------
+# Activate default venv
+# ----------------------------------------------------------------
+
+source ~/venv/ink/Scripts/activate
 
 
 # ----------------------------------------------------------------
