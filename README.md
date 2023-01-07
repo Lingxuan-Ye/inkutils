@@ -8,9 +8,7 @@
 
 ```shell
 rm -r -f ~/inkutils/ && \
-
 git clone https://github.com/Lingxuan-Ye/inkutils.git ~/inkutils/ && \
-
 ~/inkutils/deploy.sh
 ```
 
