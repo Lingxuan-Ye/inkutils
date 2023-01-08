@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+
 from sys import version_info
 
 assert version_info >= (3, 10)
 
 import argparse
 from pathlib import Path
-from typing import Iterable, Literal, Optional
+from typing import Iterable, Literal
 
 try:
     from .utils import Pavlov, filter, hexdigest
@@ -13,10 +15,10 @@ except ImportError:
 
 
 def rename(
-    path: Optional[Path | str] = None,
-    include: Optional[Iterable[str]] = None,
-    exclude: Optional[Iterable[str]] = None,
-    prefix: Optional[str] = None,
+    path: Path | str | None = None,
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
+    prefix: str | None = None,
     drop_suffix: bool = False,
     case_: Literal['lower', 'upper', 'keep'] = 'lower',
     flatten: bool = False,

@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Callable, Optional
+from typing import Callable
 
 
 class Pavlov:
@@ -11,8 +11,8 @@ class Pavlov:
 
     def __init__(
         self,
-        prolog: Optional[str] = None,
-        epilog: Optional[str] = None
+        prolog: str | None = None,
+        epilog: str | None = None
     ) -> None:
         if prolog is not None:
             self.prolog = prolog

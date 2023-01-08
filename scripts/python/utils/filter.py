@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Generator, Iterable, Optional
+from typing import Generator, Iterable
 
 
 def filter(
-    path: Optional[Path | str] = None,
-    include: Optional[Iterable[str]] = None,
-    exclude: Optional[Iterable[str]] = None,
+    path: Path | str | None = None,
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
     recursive: bool = False
 ) -> Generator[Path, None, None]:
     """

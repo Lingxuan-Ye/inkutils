@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from sys import version_info
 
 assert version_info >= (3, 10)
@@ -6,7 +8,7 @@ import argparse
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable
 
 try:
     from .utils import Pavlov, filter
@@ -21,8 +23,8 @@ class _Stats(Counter):
 
     def __init__(
         self,
-        header: Optional[str] = None,
-        sep: Optional[str] = None
+        header: str | None = None,
+        sep: str | None = None
     ) -> None:
         if header is not None:
             self.header = header
@@ -50,7 +52,7 @@ class _Stats(Counter):
     def seps(self) -> str:
         return self.__sep * 36 + '\n'
 
-    def line(self, key: str, name: Optional[str] = None) -> str:
+    def line(self, key: str, name: str | None = None) -> str:
         name = key.title() if name is None else name
         return f'{name + ":":<28}{self[key]:>8}\n'
 
@@ -76,9 +78,9 @@ class _Stats(Counter):
 
 
 def statistics(
-    path: Optional[Path | str] = None,
-    include: Optional[Iterable[str]] = None,
-    exclude: Optional[Iterable[str]] = None,
+    path: Path | str | None = None,
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
     recursive: bool = False,
     verbose: bool = False
 ) -> None:
