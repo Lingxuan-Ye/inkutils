@@ -117,7 +117,7 @@ def statistics(
         if not _groups:
             continue
 
-        for j, k, l, m, n, o, p, _, q, r in _groups:
+        for j, k, l, m, n, o, p, _, q, r in _groups:  # `_` for '(\s*\n)'
             # note that bool('') is False
             if j:  # CJK Unified Ideographs
                 _stats['cjk'] += 1
