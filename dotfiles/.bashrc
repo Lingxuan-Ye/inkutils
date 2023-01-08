@@ -88,4 +88,11 @@ source ~/venv/ink/Scripts/activate
 # Welcome
 # ----------------------------------------------------------------
 
-echo "Welcome, $NICKNAME! Nice to see you!"
+echo
+case $(( $RANDOM % 4 )) in
+    0) echo "你好，$NICKNAME！很高兴见到你！" ;;
+    1) echo "こんにちは、$NICKNAME！はじめまして！" ;;
+    2) echo "Hello, $NICKNAME! Nice to meet you!" ;;
+    3) echo -e "诶多……☆是♡同♡类♡呢♡喵♪\n\n啊嘞啊嘞QAQ？多洗忒……欧尼酱ww？呐、桥豆麻袋……已经「厌烦」吾辈了嘛？哼唧……真是「冷·酷·の·人」呢QuQ——☆(๑°⌓°๑)嘛……即便是这样的哇达西，一定也是有「存·在·の·意·义」的吧、内~★快来「肯定」啊？不然呀……咱可就要「黑化」了哦♪呐？" ;;
+esac
+echo
