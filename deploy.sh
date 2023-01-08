@@ -6,9 +6,9 @@ dir="$( cat ~/.inkpath )"
 
 # deploy dotfiles
 rm -r -f ~/.bashrc
-ln -s "$dir/dotfiles/.bashrc" ~/.bashrc
+ln "$dir/dotfiles/.bashrc" ~/.bashrc
 rm -r -f ~/.gitconfig
-ln -s "$dir/dotfiles/.gitconfig" ~/.gitconfig
+ln "$dir/dotfiles/.gitconfig" ~/.gitconfig
 
 # create venv
 rm -r -f ~/venv/ink/ && python -m venv ~/venv/ink/

@@ -8,7 +8,7 @@
 # Auto-launching `ssh-agent` on Git for Windows
 # ----------------------------------------------------------------
 
-if [[ "$(uname)" = "MINGW*" ]]; then
+if [[ "$(uname)" = MINGW* ]]; then
 
     env=~/.ssh/agent.env
 
