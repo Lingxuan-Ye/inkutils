@@ -6,8 +6,8 @@ class Pavlov:
     """
     Decorator for command-line output.
     """
-    __prolog = 'proceeding...'
-    __epilog = 'press any key to exit...'
+    __prolog: str = ''
+    __epilog: str = 'press any key to exit...'
 
     def __init__(
         self,
@@ -38,10 +38,9 @@ class Pavlov:
     def __call__(self, func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            print(self.prolog)
-            print('\n\n', end='')
+            print()
+            print(self.prolog + '\n\n')
             result = func(*args, **kwargs)
-            print('\n\n', end='')
-            input(self.epilog)
+            input('\n\n' + self.epilog)
             return result
         return wrapper
