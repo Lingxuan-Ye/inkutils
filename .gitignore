@@ -2,9 +2,8 @@
 
 ## Include (ignore)
 _
-_*/*
-?.py
-?.ipynb
+_/
+?.*
 
 ## Exclude (not ignore)
 !.gitkeep
