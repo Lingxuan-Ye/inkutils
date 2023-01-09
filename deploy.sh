@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# get absolute path of 'inkutils'
-bash ./locate.sh
-dir="$( cat ~/.inkpath )"
+# this script must be executed top level directory of 'inkutils'
+
+# remove dotfile
+rm -f ~/{.bashrc,.gitconfig,.inkonfig}
 
 # deploy dotfiles
-rm -r -f ~/.bashrc
+dir="$( python ./services/locate.py )"  # this creates '~/.inkonfig'
 ln "$dir/dotfiles/.bashrc" ~/.bashrc
-rm -r -f ~/.gitconfig
 ln "$dir/dotfiles/.gitconfig" ~/.gitconfig
 
 # create venv
