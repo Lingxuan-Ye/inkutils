@@ -20,10 +20,7 @@ if [[ "$(uname)" = MINGW* ]]; then
 
     agent_load_env
 
-    # agent_run_state:
-    # 0=agent running w/ key;
-    # 1=agent w/o key;
-    # 2=agent not running
+    # agent_run_state: 0=agent running w/ key; 1=agent w/o key; 2=agent not running
     agent_run_state=$(ssh-add -l >| /dev/null 2>&1; echo $?)
 
     if [ ! "$SSH_AUTH_SOCK" ] || [ $agent_run_state = 2 ]; then
@@ -49,18 +46,21 @@ shopt -s globstar
 
 
 # ----------------------------------------------------------------
-# Get absolute path of 'inkutils'
+# Get top level directory of 'inkutils'
 # ----------------------------------------------------------------
 
-dir="$( cat ~/.inkpath )"
+# a valid path does not include `"`
+temp="$( grep -o -P '"top_level_dir"\s*?:\s*?".*?"' ~/.inkonfig )"
+dir="$( grep -o -P '[^"]*(?="$)' <<< "$temp" )"
+unset temp
 
 
 # ----------------------------------------------------------------
 # Exports
 # ----------------------------------------------------------------
 
-export PATH="$dir/scripts/":$HOME/scripts/:$PATH
-export PYTHONPATH="$dir/packages/python/":$HOME/packages/:$PYTHONPATH
+export PATH="$dir/services/":"$dir/scripts/shell/":"$dir/scripts/python/":"$HOME"/scripts/:"$PATH"
+export PYTHONPATH="$dir/scripts/python/":"$HOME"/packages/:"$PYTHONPATH"
 export USERNAME="Lingxuan Ye"
 export NICKNAME="inknos"
 
@@ -69,12 +69,12 @@ export NICKNAME="inknos"
 # Alias
 # ----------------------------------------------------------------
 
-alias clean="$dir/scripts/clean.sh"
+alias clean="bash $dir/scripts/shell/clean.sh"
 alias cry="python -m crypto $@"
-alias rn="python $dir/packages/python/hash_rename.py $@"
-alias stats="python $dir/packages/python/stats.py $@"
+alias rn="python $dir/scripts/python/hash_rename.py $@"
+alias stats="python $dir/scripts/python/stats.py $@"
 alias sv="ifconfig || ipconfig && python -m http.server $@"
-alias venv="source $dir/scripts/venv.sh $@"
+alias venv="source $dir/scripts/shell/venv.sh $@"
 
 
 # ----------------------------------------------------------------
