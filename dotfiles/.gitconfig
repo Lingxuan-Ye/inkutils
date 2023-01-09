@@ -4,6 +4,7 @@
 	ignorecase = false
 	quotepath = false
 	editor = code --wait
+	symlinks = true
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f
