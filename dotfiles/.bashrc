@@ -59,8 +59,8 @@ unset temp
 # Exports
 # ----------------------------------------------------------------
 
-export PATH="$dir/services/":"$dir/scripts/shell/":"$dir/scripts/python/":"$HOME"/scripts/:"$PATH"
-export PYTHONPATH="$dir/scripts/python/":"$HOME"/packages/:"$PYTHONPATH"
+export PATH="$dir/services/":"$dir/scripts/shell/":"$dir/scripts/python/":"$PATH"
+export PYTHONPATH="$dir/scripts/python/":"$PYTHONPATH"
 export USERNAME="Lingxuan Ye"
 export NICKNAME="inknos"
 
