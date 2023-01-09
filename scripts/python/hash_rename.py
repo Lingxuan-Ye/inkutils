@@ -62,9 +62,9 @@ def rename(
         prefix = ''
 
     for i in filter(path, include, exclude):
-        parent = Path() if flatten else path.parent
+        parent = Path() if flatten else i.parent
         suffix = '' if drop_suffix else ''.join(i.suffixes)
-        name = prefix + hexdigest(path, algorithm) + suffix
+        name = prefix + hexdigest(i, algorithm) + suffix
         match case_.lower():
             case 'lower':
                 name = name.lower()
@@ -77,9 +77,9 @@ def rename(
                     f"value '{case_}' is invalid, "
                     "expect 'lower', 'upper' or 'keep'."
                 )
-        new = path.rename(parent / name)
+        new = i.rename(parent / name)
         if not quiet:
-            print(f"'{path}' -> '{new}'.", end='\n\n')
+            print(f"'{i}' -> '{new}'.", end='\n\n')
 
 
 class _Help:
