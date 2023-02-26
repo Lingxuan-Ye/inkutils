@@ -7,7 +7,7 @@ class Pavlov:
     Decorator for command-line output.
     """
     __prolog: str = ''
-    __epilog: str = 'press any key to exit...'
+    __epilog: str = 'Press any key to exit...'
 
     def __init__(
         self,

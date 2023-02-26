@@ -1,0 +1,16 @@
+# ================================================================
+# Default Configuration
+# ----------------------------------------------------------------
+# - Do not modify this file!
+# - Use 'config.yml' to overwrite default configuration
+# - A key with `.` is considered invalid
+# ================================================================
+
+
+# environment variable `USERNAME` will be set to `user.alias`
+# if `user.alias` does not exist (null), use `user.name` instead
+user:
+  name: User
+  alias: null
+  date_of_birth: null
+  email: null

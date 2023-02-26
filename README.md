@@ -9,7 +9,6 @@
 推荐安装方式：
 
 ```shell
-rm -r -f ~/inkutils/ && \
 git clone https://github.com/Lingxuan-Ye/inkutils.git ~/inkutils/ && \
 ~/inkutils/deploy.sh
 ```
@@ -18,5 +17,5 @@ git clone https://github.com/Lingxuan-Ye/inkutils.git ~/inkutils/ && \
 
 ## 注意
 
-- 由于本工具集以自用为主，暂不考虑向下兼容，Python 解释器要求 3.10 版本及以上。
+- 本工具集以自用为主，暂不考虑向下兼容，Python 解释器要求 3.10 版本及以上；如需兼容 3.10 以下版本，请自行删除类型注释，并使用 `if-statement` 替换 `match-case`；不保证 Python 3.7 以下版本的正常运行。
 - 其他的想到再说。

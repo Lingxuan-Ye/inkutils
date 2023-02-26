@@ -1,0 +1,13 @@
+# ================================================================
+# User Configuration
+# ================================================================
+
+
+# environment variable `USERNAME` will be set to `user.alias`
+# if `user.alias` does not exist (null), use `user.name` instead
+user:
+  name: Lingxuan Ye
+  alias: Lingxuan
+  date_of_birth: 1998-09-30
+  email: lingxuan.ye@icloud.com
+
