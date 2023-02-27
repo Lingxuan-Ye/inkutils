@@ -11,17 +11,24 @@ def locate_root() -> Path:
     the directory structure.
     """
     for i in locate().parents:
-        if i.name == 'service':
+        if i.name == 'services':
             return i.parent
     return Path.home() / 'inkutils'
 
 
+HOME = Path.home()
+
 ROOT = locate_root()
 DOCUMENTATION = ROOT / 'documentation'
 LIBRARY = ROOT / 'library'
-SCRIPT = ROOT / 'script'
-SERVICE = ROOT / 'service'
-TEMPLATE = ROOT / 'template'
+SCRIPTS = ROOT / 'scripts'
+SERVICES = ROOT / 'services'
+TEMPLATES = ROOT / 'templates'
 
-CONFIG_GLOBAL = SERVICE / 'data/default.yml'
+CONFIG_GLOBAL = SERVICES / 'data/default.yml'
 CONFIG_USER = ROOT / 'config.yml'
+
+if ROOT.drive:
+    ROOT_STR = '/' + ''.join(ROOT.as_posix().split(':', 1))
+else:
+    ROOT_STR = ROOT.as_posix()

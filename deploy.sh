@@ -2,7 +2,7 @@
 
 # this script must be executed top level directory of 'inkutils'
 
-python ./service/deploy.py
+python ./services/deploy.py
 
 # exit prompt
 echo

@@ -7,9 +7,12 @@
 
 USERNAME={% config user.name %}
 NICKNAME={% config user.alias %}
-dir={% root %}
+root={% root %}
 
 # stop
+
+scripts="${root}/scripts"
+library="${root}/library"
 
 
 
@@ -33,18 +36,18 @@ shopt -s globstar
 # ================================================================
 
 if [[ -z "$PATH" ]]; then
-    PATH="$dir/script/"
+    PATH="$scripts"
 else
-    PATH="$dir/script/":"$PATH"
+    PATH="$scripts":"$PATH"
 fi
 
 export OS="$(uname)"
 export PATH
-export PYTHONPATH="$dir/library/":"$dir/script/"
+export PYTHONPATH="$library":"$scripts"
 export USERNAME
 
 if [[ "$OS" = MINGW* ]]; then
-    setx PYTHONPATH "$dir/library/;$dir/script/" >| /dev/null
+    setx PYTHONPATH "$library;$scripts" >| /dev/null
 fi
 
 
@@ -54,13 +57,15 @@ fi
 # Aliases
 # ================================================================
 
-alias clean="bash $dir/script/clean.sh"
-alias cry="python $dir/script/crypto/ $@"
-alias stats="python $dir/script/stats.py $@"
+alias clean="bash ${scripts}/clean.sh"
+alias cry="python ${scripts}/crypto/ $@"
+alias stats="python ${scripts}/stats.py $@"
 alias sv="ifconfig || ipconfig && python -m http.server $@"
-alias venv="source $dir/script/venv.sh $@"
+alias venv="source ${scripts}/venv.sh $@"
 
-unset dir
+unset root
+unset scripts
+unset library
 
 
 

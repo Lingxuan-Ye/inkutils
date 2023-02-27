@@ -1,12 +1,9 @@
 import subprocess
 import sys
 import venv
-from pathlib import Path
 
-from library.consts import ROOT, TEMPLATE
+from models.consts import HOME, ROOT_STR, TEMPLATES
 
-ROOT_S = ROOT.as_posix()
-HOME = Path.home()
 VENV_NAME = 'ink'
 
 
@@ -16,11 +13,11 @@ def main() -> None:
         reply = input('Install PyYAML(dependency)? [y/n]: ').lower()
         if reply.startswith('y'):
             subprocess.run('pip install PyYAML')
-            from library.dotfile import deploy_dotfile
+            from models.dotfile import deploy_dotfile
             break
         elif reply.startswith('n'):
             try:
-                from library.dotfile import deploy_dotfile
+                from models.dotfile import deploy_dotfile
             except ImportError:
                 print('Missing dependencies.')
                 sys.exit()
@@ -30,7 +27,7 @@ def main() -> None:
     while True:
         reply = input('Deploy dotfiles? [y/n]: ').lower()
         if reply.startswith('y'):
-            for i in TEMPLATE.rglob('*'):
+            for i in TEMPLATES.rglob('*'):
                 if not i.is_file():
                     continue
                 deploy_dotfile(i, HOME / i.name)
@@ -46,7 +43,7 @@ def main() -> None:
             if not dir.exists():
                 venv.main([str(dir)])
             subprocess.run(
-                f'{dir}/Scripts/pip install -r {ROOT_S}/requirements.txt'
+                f'{dir}/Scripts/pip install -r {ROOT_STR}/requirements.txt'
             )
             break
         elif reply.startswith('n'):

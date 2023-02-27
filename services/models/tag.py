@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import config
-from .consts import ROOT
+from .consts import ROOT_STR
 
 
 class TagError(Exception):
@@ -62,6 +62,4 @@ def _config(key: str, *_) -> Any:
 
 @TagParser.register
 def _root(*_) -> str:
-    if ROOT.drive:
-        return '/' + ''.join(ROOT.as_posix().split(':', 1))
-    return ROOT.as_posix()
+    return ROOT_STR
