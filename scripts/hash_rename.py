@@ -21,7 +21,7 @@ def rename(
     flatten: bool = False,
     algorithm: Literal['md5', 'sha1', 'sha256', 'sha512'] = 'sha256',
     quiet: bool = False
-) -> None:
+) -> list[Path]:
     """
     Parameters
     ----------
@@ -49,6 +49,10 @@ def rename(
         Specify hash algorithm.
     quiet :
         If True, run quietly.
+
+    Returns
+    -------
+    list[Path] : Path instances to renamed files.
     """
     if path is None:
         path = Path()
@@ -57,6 +61,8 @@ def rename(
 
     if prefix is None:
         prefix = ''
+
+    new_paths: list[Path] = []
 
     for i in filter(path, include, exclude):
         parent = Path() if flatten else i.parent
@@ -75,8 +81,11 @@ def rename(
                     "expect 'lower', 'upper' or 'keep'."
                 )
         new = i.rename(parent / name)
+        new_paths.append(new)
         if not quiet:
             print(f"'{i}' -> '{new}'.", end='\n\n')
+
+    return new_paths
 
 
 class _Help:
