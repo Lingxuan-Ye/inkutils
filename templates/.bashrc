@@ -47,7 +47,11 @@ export PYTHONPATH="$library":"$scripts"
 export USERNAME
 
 if [[ "$OS" = MINGW* ]]; then
-    setx PYTHONPATH "$library;$scripts" >| /dev/null
+    library_="${library:1}"
+    scripts_="${scripts:1}"
+    setx PYTHONPATH "${scripts_/'/'/':/'};${scripts_/'/'/':/'}" >| /dev/null
+    unset library_
+    unset scripts_
 fi
 
 
