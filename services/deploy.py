@@ -2,7 +2,7 @@ import subprocess
 import sys
 import venv
 
-from models.consts import HOME, ROOT_STR, TEMPLATES
+from models.consts import HOME, ROOT, TEMPLATES
 
 VENV_NAME = 'ink'
 
@@ -42,8 +42,9 @@ def main() -> None:
             dir = HOME / f'venv/{VENV_NAME}'
             if not dir.exists():
                 venv.main([str(dir)])
+            root = ROOT.as_posix()
             subprocess.run(
-                f'{dir}/Scripts/pip install -r {ROOT_STR}/requirements.txt'
+                f'{dir}/Scripts/pip install -r {root}/requirements.txt'
             )
             break
         elif reply.startswith('n'):
