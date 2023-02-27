@@ -6,12 +6,9 @@ assert version_info >= (3, 10)
 
 import argparse
 from pathlib import Path
-from typing import Iterable, Literal
+from typing import Iterable, Literal, Sequence
 
-try:
-    from .utils import Pavlov, filter, hexdigest
-except ImportError:
-    from utils import Pavlov, filter, hexdigest
+from utils import filter, hexdigest, pavlov
 
 
 def rename(
@@ -127,8 +124,8 @@ class _Help:
     """
 
 
-@Pavlov()
-def main() -> None:
+@pavlov
+def main(args: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser('Hash-Rename')
     parser.add_argument('path', nargs='*', help=_Help.path)
     parser.add_argument(
@@ -136,16 +133,14 @@ def main() -> None:
         '--include',
         action='extend',
         nargs='+',
-        help=_Help.include,
-        metavar=''
+        help=_Help.include
     )
     parser.add_argument(
         '-x',
         '--exclude',
         action='extend',
         nargs='+',
-        help=_Help.exclude,
-        metavar=''
+        help=_Help.exclude
     )
     parser.add_argument('-p', '--prefix', help=_Help.prefix, metavar='')
     parser.add_argument(
@@ -159,8 +154,7 @@ def main() -> None:
         '--case',
         choices=('lower', 'upper', 'keep'),
         default='lower',
-        help=_Help.case,
-        metavar=''
+        help=_Help.case
     )
     parser.add_argument(
         '-f',
@@ -173,8 +167,7 @@ def main() -> None:
         '--algorithm',
         choices=('md5', 'sha1', 'sha256', 'sha512'),
         default='sha256',
-        help=_Help.algorithm,
-        metavar=''
+        help=_Help.algorithm
     )
     parser.add_argument(
         '-q',
@@ -183,22 +176,22 @@ def main() -> None:
         help=_Help.quiet
     )
 
-    args = parser.parse_args()
+    options = parser.parse_args(args)
 
-    if not args.path:
-        args.path.append(Path())
+    if not options.path:
+        options.path.append(Path())
 
-    for i in args.path:
+    for i in options.path:
         rename(
             i,
-            args.include,
-            args.exclude,
-            args.prefix,
-            args.drop_suffix,
-            args.case,
-            args.flatten,
-            args.algorithm,
-            args.quiet
+            options.include,
+            options.exclude,
+            options.prefix,
+            options.drop_suffix,
+            options.case,
+            options.flatten,
+            options.algorithm,
+            options.quiet
         )
 
 

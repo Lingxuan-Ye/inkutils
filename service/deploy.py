@@ -1,17 +1,13 @@
 import subprocess
 import sys
+import venv
 from pathlib import Path
 
 from library.consts import ROOT, TEMPLATE
 
+ROOT_S = ROOT.as_posix()
+HOME = Path.home()
 VENV_NAME = 'ink'
-SINPPET = f'''
-rm -rf "~/venv/{VENV_NAME}/"
-python -m venv "~/venv/{VENV_NAME}/"
-source "~/venv/{VENV_NAME}/Scripts/activate"
-pip install --upgrade pip
-pip install -r "{ROOT}/requirements.txt"
-'''
 
 
 def main() -> None:
@@ -37,7 +33,7 @@ def main() -> None:
             for i in TEMPLATE.rglob('*'):
                 if not i.is_file():
                     continue
-                deploy_dotfile(i, Path.home() / i.name)
+                deploy_dotfile(i, HOME / i.name)
             break
         elif reply.startswith('n'):
             break
@@ -46,11 +42,11 @@ def main() -> None:
     while True:
         reply = input('Deploy Python virtual environment? [y/n]: ').lower()
         if reply.startswith('y'):
+            dir = HOME / f'venv/{VENV_NAME}'
+            if not dir.exists():
+                venv.main([str(dir)])
             subprocess.run(
-                SINPPET,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True
+                f'{dir}/Scripts/pip install -r {ROOT_S}/requirements.txt'
             )
             break
         elif reply.startswith('n'):

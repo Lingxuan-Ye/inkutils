@@ -32,24 +32,26 @@ def filter(
 
     if path.is_file():
         yield path
-    else:
-        if include is not None:
-            include = tuple(f".{i.lstrip('.')}" for i in include)
-        if exclude is None:
-            exclude = ()
-        else:
-            exclude = tuple(f".{i.lstrip('.')}" for i in exclude)
+        return None
 
-        paths = path.rglob('*') if recursive else path.glob('*')
+    if include is not None:
+        include = set(f'.{i.lstrip(".")}' for i in include)
+    if exclude is not None:
+        exclude = set(f".{i.lstrip('.')}" for i in exclude)
 
-        for i in paths:
-            if not i.is_file():
-                continue
-            suffix = i.suffix
-            suffixes = ''.join(i.suffixes)
+    paths = path.rglob('*') if recursive else path.glob('*')
+
+    for i in paths:
+        if not i.is_file():
+            continue
+        suffix = i.suffix
+        suffixes = ''.join(i.suffixes)
+        if exclude is not None:
             if suffix in exclude or suffixes in exclude:
                 continue
-            if include is not None:
-                if suffix not in include and suffixes not in include:
-                    continue
-            yield i
+        if include is not None:
+            if suffix not in include and suffixes not in include:
+                continue
+        yield i
+        
+    return None

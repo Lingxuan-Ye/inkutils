@@ -61,5 +61,7 @@ def _config(key: str, *_) -> Any:
 
 
 @TagParser.register
-def _root(*_) -> Path:
-    return ROOT
+def _root(*_) -> str:
+    if ROOT.drive:
+        return '/' + ''.join(ROOT.as_posix().split(':', 1))
+    return ROOT.as_posix()
