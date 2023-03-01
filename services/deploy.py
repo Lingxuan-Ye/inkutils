@@ -9,6 +9,8 @@ VENV_NAME = 'ink'
 
 def main() -> None:
 
+    root = ROOT.as_posix()
+
     while True:
         reply = input('Install PyYAML(dependency)? [y/n]: ').lower()
         if reply.startswith('y'):
@@ -21,6 +23,15 @@ def main() -> None:
             except ImportError:
                 print('Missing dependencies.')
                 sys.exit()
+            break
+        print("Invalid input. Please enter 'y' or 'n'.")
+
+    while True:
+        reply = input('Install Chocolatey? [y/n]: ').lower()
+        if reply.startswith('y'):
+            subprocess.run(f'powershell {root}/services/choco-install.ps1')
+            break
+        elif reply.startswith('n'):
             break
         print("Invalid input. Please enter 'y' or 'n'.")
 
@@ -42,7 +53,6 @@ def main() -> None:
             dir = HOME / f'venv/{VENV_NAME}'
             if not dir.exists():
                 venv.main([str(dir)])
-            root = ROOT.as_posix()
             subprocess.run(
                 f'{dir}/Scripts/pip install -r {root}/requirements.txt'
             )

@@ -36,9 +36,9 @@ shopt -s globstar
 # ================================================================
 
 if [[ -z "$PATH" ]]; then
-    PATH="$scripts"
+    PATH="$scripts":"/C/ProgramData/chocolatey/bin"
 else
-    PATH="$scripts":"$PATH"
+    PATH="$scripts":"/C/ProgramData/chocolatey/bin":"$PATH"
 fi
 
 export OS="$(uname)"
