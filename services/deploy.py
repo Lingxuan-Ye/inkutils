@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 import venv
@@ -26,10 +27,10 @@ def main() -> None:
             break
         print("Invalid input. Please enter 'y' or 'n'.")
 
-    while True:
+    while os.name == 'nt':
         reply = input('Install Chocolatey? [y/n]: ').lower()
         if reply.startswith('y'):
-            subprocess.run(f'powershell {root}/services/choco-install.ps1')
+            subprocess.run(f'powershell "{root}/services/choco-install.ps1"')
             break
         elif reply.startswith('n'):
             break
