@@ -6,8 +6,8 @@ class Pavlov:
     """
     Decorator for command-line output.
     """
-    prolog: str = ''
-    epilog: str = 'Press any key to exit...'
+    __prolog: str = ''
+    __epilog: str = 'Press any key to exit...'
 
     def __init__(
         self,
@@ -19,14 +19,31 @@ class Pavlov:
         if epilog is not None:
             self.epilog = epilog
 
+    @property
+    def prolog(self) -> str:
+        if self.__prolog:
+            return '\n\n' + self.__prolog + '\n\n'
+        return self.__prolog
+
+    @prolog.setter
+    def prolog(self, __value: str) -> None:
+        self.__prolog = __value.strip()
+
+    @property
+    def epilog(self) -> str:
+        return '\n\n' + self.__epilog
+
+    @epilog.setter
+    def epilog(self, __value: str) -> None:
+        self.__epilog = __value.strip()
+
     def __call__(self, func: Callable) -> Callable:
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            print()
-            print(self.prolog + '\n\n')
+            print(self.prolog)  # there is one more '\n' from argument `end`
             result = func(*args, **kwargs)
-            input('\n\n' + self.epilog)
+            input(self.epilog)
             return result
 
         return wrapper

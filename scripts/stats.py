@@ -8,6 +8,7 @@ import argparse
 import re
 from collections import Counter
 from pathlib import Path
+from textwrap import dedent
 from typing import Iterable, Sequence
 
 from utils import filter, pavlov
@@ -17,20 +18,24 @@ class _Stats(Counter):
 
     __header = 'STATISTICS'
     __sep = '='
+    __description = ''
 
     def __init__(
         self,
         header: str | None = None,
-        sep: str | None = None
+        sep: str | None = None,
+        description: str | None = None
     ) -> None:
         if header is not None:
             self.header = header
         if sep is not None:
             self.sep = sep
+        if description is not None:
+            self.description = description
 
     @property
     def header(self) -> str:
-        return self.__header  + '\n'
+        return self.__header + '\n'
 
     @header.setter
     def header(self, __value: str) -> None:
@@ -49,6 +54,16 @@ class _Stats(Counter):
     def seps(self) -> str:
         return self.__sep * 36 + '\n'
 
+    @property
+    def description(self) -> str:
+        if self.__description:
+            return self.__description + '\n\n'
+        return self.__description
+
+    @description.setter
+    def description(self, __value: str) -> None:
+        self.__description = __value.strip()
+
     def line(self, key: str, name: str | None = None) -> str:
         name = key.title() if name is None else name
         return f'{name + ":":<28}{self[key]:>8}\n'
@@ -57,6 +72,7 @@ class _Stats(Counter):
         return ''.join((
             self.header,
             self.seps,
+            self.description,
             self.line('paragraphs'),
             self.line('non_blank_lines', 'Non-Blank Lines'),
             self.line('lines'),
@@ -103,12 +119,15 @@ def statistics(
         inventory: list[_Stats] = []
 
     stats = _Stats()
+    count = 0
     for i in filter(path, include, exclude, recursive):
         try:
             with open(i, encoding='utf-8') as f:
                 _raw = f.read()
         except UnicodeDecodeError:
             continue
+
+        count += 1
 
         _stats = _Stats(str(i), '-')
         _groups: list[tuple[str, ...]] = _PATTERN.findall(_raw)
@@ -156,18 +175,21 @@ def statistics(
         if verbose:
             inventory.append(_stats)
 
+    stats.description = f'{"Files:":<28}{count:>8}'
+
     message = str(stats)
 
     if verbose:
+        details = '\n\n'.join(str(i) for i in inventory)
         message += (
             '\n'
             '\n'
             '\n'
-            f'DETAILS\n'
-            f'{stats.seps}'
+            'DETAILS\n' +
+            stats.seps +
             '\n'
-            '\n'
-            '\n\n'.join(str(i) for i in inventory)
+            '\n' +
+            details
         )
 
     print(message)
