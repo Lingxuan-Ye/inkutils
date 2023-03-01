@@ -3,11 +3,9 @@
 based_on_style = pep8
 allow_split_before_dict_value = false
 dedent_closing_brackets = true
-force_multiline_dict=true
+each_dict_entry_on_separate_line = true
+force_multiline_dict = true
 split_arguments_when_comma_terminated=true
-split_all_comma_separated_values = true
-split_before_expression_after_opening_paren=true
+split_before_expression_after_opening_paren = true
 split_before_first_argument = true
 split_complex_comprehension = true
-split_penalty_after_opening_bracket = 0
-split_penalty_for_added_line_split = 0
