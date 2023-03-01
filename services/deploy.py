@@ -2,7 +2,7 @@ import subprocess
 import sys
 import venv
 
-from models.consts import HOME, ROOT, TEMPLATES
+from models.consts import DOTFILES, HOME, ROOT
 
 VENV_NAME = 'ink'
 
@@ -27,7 +27,7 @@ def main() -> None:
     while True:
         reply = input('Deploy dotfiles? [y/n]: ').lower()
         if reply.startswith('y'):
-            for i in TEMPLATES.rglob('*'):
+            for i in DOTFILES.rglob('*'):
                 if not i.is_file():
                     continue
                 deploy_dotfile(i, HOME / i.name)

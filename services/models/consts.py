@@ -23,7 +23,7 @@ DOCUMENTATION = ROOT / 'documentation'
 LIBRARY = ROOT / 'library'
 SCRIPTS = ROOT / 'scripts'
 SERVICES = ROOT / 'services'
-TEMPLATES = ROOT / 'templates'
+DOTFILES = ROOT / 'dotfiles'
 
 CONFIG_GLOBAL = SERVICES / 'data/default.yml'
 CONFIG_USER = ROOT / 'config.yml'
