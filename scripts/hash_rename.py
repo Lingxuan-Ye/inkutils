@@ -1,27 +1,27 @@
+#!/usr/bin/env python
+
 from sys import version_info
 
 assert version_info >= (3, 10)
 
 import argparse
 from pathlib import Path
-from typing import Iterable, Literal, Optional
+from typing import Iterable, Literal, Sequence
 
-try:
-    from .utils import Pavlov, filter, hexdigest
-except ImportError:
-    from utils import Pavlov, filter, hexdigest
+from utils import filter, hexdigest, pavlov
 
 
 def rename(
-    path: Optional[Path | str] = None,
-    include: Optional[Iterable[str]] = None,
-    exclude: Optional[Iterable[str]] = None,
-    prefix: Optional[str] = None,
+    path: Path | str | None = None,
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
+    prefix: str | None = None,
     drop_suffix: bool = False,
+    case_: Literal['lower', 'upper', 'keep'] = 'lower',
     flatten: bool = False,
     algorithm: Literal['md5', 'sha1', 'sha256', 'sha512'] = 'sha256',
     quiet: bool = False
-) -> None:
+) -> list[Path]:
     """
     Parameters
     ----------
@@ -41,12 +41,18 @@ def rename(
         Prefix before hash digest. May be expansible in future version.
     drop_suffix :
         If True, drop file suffix.
+    case_ :
+        Set file name case.
     flatten :
         If True, extract renamed files in subdirectories to working directory.
     algorithm :
         Specify hash algorithm.
     quiet :
         If True, run quietly.
+
+    Returns
+    -------
+    list[Path] : Path instances to renamed files.
     """
     if path is None:
         path = Path()
@@ -56,14 +62,30 @@ def rename(
     if prefix is None:
         prefix = ''
 
+    new_paths: list[Path] = []
+
     for i in filter(path, include, exclude):
-        parent = Path() if flatten else path.parent
+        parent = Path() if flatten else i.parent
         suffix = '' if drop_suffix else ''.join(i.suffixes)
-        new = path.rename(
-            parent / (prefix + hexdigest(path, algorithm) + suffix)
-        )
+        name = prefix + hexdigest(i, algorithm) + suffix
+        match case_.lower():
+            case 'lower':
+                name = name.lower()
+            case 'upper':
+                name = name.upper()
+            case 'keep':
+                pass
+            case _:
+                raise ValueError(
+                    f"value '{case_}' is invalid, "
+                    "expect 'lower', 'upper' or 'keep'."
+                )
+        new = i.rename(parent / name)
+        new_paths.append(new)
         if not quiet:
-            print(f"'{path}' -> '{new}'.", end='\n\n')
+            print(f"'{i}' -> '{new}'.", end='\n\n')
+
+    return new_paths
 
 
 class _Help:
@@ -93,14 +115,17 @@ class _Help:
         if specified, drop file suffix
     """
 
+    case = """
+        set file name case (available: 'lower', 'upper' and 'keep')
+    """
+
     flatten = """
         if specified, extract renamed files in subdirectories to
         working directory
     """
 
     algorithm = """
-        hash algorithm (available: 'md5', 'sha1', 'sha256' and 'sha512');
-        use 'sha256' if invalid value passed in
+        hash algorithm (available: 'md5', 'sha1', 'sha256' and 'sha512')
     """
 
     quiet = """
@@ -108,8 +133,8 @@ class _Help:
     """
 
 
-@Pavlov()
-def main() -> None:
+@pavlov
+def main(args: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser('Hash-Rename')
     parser.add_argument('path', nargs='*', help=_Help.path)
     parser.add_argument(
@@ -117,16 +142,14 @@ def main() -> None:
         '--include',
         action='extend',
         nargs='+',
-        help=_Help.include,
-        metavar=''
+        help=_Help.include
     )
     parser.add_argument(
-        '-e',
+        '-x',
         '--exclude',
         action='extend',
         nargs='+',
-        help=_Help.exclude,
-        metavar=''
+        help=_Help.exclude
     )
     parser.add_argument('-p', '--prefix', help=_Help.prefix, metavar='')
     parser.add_argument(
@@ -134,6 +157,13 @@ def main() -> None:
         '--drop_suffix',
         action='store_true',
         help=_Help.drop_suffix
+    )
+    parser.add_argument(
+        '-c',
+        '--case',
+        choices=('lower', 'upper', 'keep'),
+        default='lower',
+        help=_Help.case
     )
     parser.add_argument(
         '-f',
@@ -146,8 +176,7 @@ def main() -> None:
         '--algorithm',
         choices=('md5', 'sha1', 'sha256', 'sha512'),
         default='sha256',
-        help=_Help.algorithm,
-        metavar=''
+        help=_Help.algorithm
     )
     parser.add_argument(
         '-q',
@@ -156,21 +185,22 @@ def main() -> None:
         help=_Help.quiet
     )
 
-    args = parser.parse_args()
+    options = parser.parse_args(args)
 
-    if not args.path:
-        args.path.append(Path())
+    if not options.path:
+        options.path.append(Path())
 
-    for i in args.path:
+    for i in options.path:
         rename(
             i,
-            args.include,
-            args.exclude,
-            args.prefix,
-            args.drop_suffix,
-            args.flatten,
-            args.algorithm,
-            args.quiet
+            options.include,
+            options.exclude,
+            options.prefix,
+            options.drop_suffix,
+            options.case,
+            options.flatten,
+            options.algorithm,
+            options.quiet
         )
 
 

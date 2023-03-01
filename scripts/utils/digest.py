@@ -4,7 +4,7 @@ assert version_info >= (3, 10)
 
 import hashlib
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 
 class Digest:
@@ -16,7 +16,7 @@ class Digest:
     ) -> None:
         self.path = path
         self.set_algorithm(algorithm)
-        self.__hash: Optional['hashlib._Hash'] = None
+        self.__hash: 'hashlib._Hash' | None = None
 
     def set_algorithm(
         self,

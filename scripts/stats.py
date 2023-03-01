@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from sys import version_info
 
 assert version_info >= (3, 10)
@@ -6,12 +8,9 @@ import argparse
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable, Sequence
 
-try:
-    from .utils import Pavlov, filter
-except ImportError:
-    from utils import Pavlov, filter
+from utils import filter, pavlov
 
 
 class _Stats(Counter):
@@ -21,8 +20,8 @@ class _Stats(Counter):
 
     def __init__(
         self,
-        header: Optional[str] = None,
-        sep: Optional[str] = None
+        header: str | None = None,
+        sep: str | None = None
     ) -> None:
         if header is not None:
             self.header = header
@@ -48,11 +47,11 @@ class _Stats(Counter):
 
     @property
     def seps(self) -> str:
-        return self.__sep * 40 + '\n'
+        return self.__sep * 36 + '\n'
 
-    def line(self, key: str, name: Optional[str] = None) -> str:
+    def line(self, key: str, name: str | None = None) -> str:
         name = key.title() if name is None else name
-        return f'{name + ":":<32}{self[key]:>8}\n'
+        return f'{name + ":":<28}{self[key]:>8}\n'
 
     def __str__(self) -> str:
         return ''.join((
@@ -75,10 +74,22 @@ class _Stats(Counter):
         ))
 
 
+_PATTERN: re.Pattern = re.compile(
+    r'([\u4E00-\u9FFF\u3400-\u4DBF\U00020000-\U0002A6DF\U0002A700-\U0002EBEF\U00030000-\U0003134F])|'
+    r'([\u3040-\u309F])|'
+    r'([\u30A0-\u30FF])|'
+    r'(\w)|'
+    r'(\S)|'
+    r'((\s*\n)+)|'
+    r'(\s)|'
+    r'(.)'
+)
+
+
 def statistics(
-    path: Optional[Path | str] = None,
-    include: Optional[Iterable[str]] = None,
-    exclude: Optional[Iterable[str]] = None,
+    path: Path | str | None = None,
+    include: Iterable[str] | None = None,
+    exclude: Iterable[str] | None = None,
     recursive: bool = False,
     verbose: bool = False
 ) -> None:
@@ -93,51 +104,45 @@ def statistics(
 
     stats = _Stats()
     for i in filter(path, include, exclude, recursive):
-        with open(i, encoding='utf-8') as f:
-            _raw = f.read()
-        _stats = _Stats(str(path), '-')
-        _groups: list[tuple[str, ...]] = re.findall(
-            r'([\u4E00-\u9FFF])|'
-            r'([\u3400-\u4DBF\U00020000-\U0002A6DF\U0002A700-\U0002EBEF\U00030000-\U0003134F])|'
-            r'([\u3040-\u309F])|'
-            r'([\u30A0-\u30FF])|'
-            r'(\w)|'
-            r'(\S)|'
-            r'((\s*\n)+)|'
-            r'(\s)|'
-            r'(.)',
-            _raw
-        )
-        for j, k, l, m, n, o, p, _, q, r in _groups:
-            # note that bool('') is False
-            if j:  # CJK Unified Ideographs
+        try:
+            with open(i, encoding='utf-8') as f:
+                _raw = f.read()
+        except UnicodeDecodeError:
+            continue
+
+        _stats = _Stats(str(i), '-')
+        _groups: list[tuple[str, ...]] = _PATTERN.findall(_raw)
+
+        if not _groups:
+            continue
+
+        for j, k, l, m, n, o, _, p, q in _groups:  # `_` for '(\s*\n)'
+            if j:  # CJK Unified Ideographs and CJK Extension
                 _stats['cjk'] += 1
                 _stats['words'] += 1
-            elif k:  # CJK Extension
-                _stats['cjk'] += 1
-                _stats['words'] += 1
-            elif l:  # Hiragana
+            elif k:  # Hiragana
                 _stats['hiragana'] += 1
                 _stats['words'] += 1
-            elif m:  # Katakana
+            elif l:  # Katakana
                 _stats['katakana'] += 1
                 _stats['words'] += 1
-            elif n:  # r'\w'
+            elif m:  # r'\w'
                 _stats['words'] += 1
-            elif o:  # r'\S'
+            elif n:  # r'\S'
                 _stats['punctuations'] += 1
-            elif p:  # r'(\s*\n)+'
-                _linefeeds: int = p.count('\n')
+            elif o:  # r'(\s*\n)+'
+                _linefeeds: int = o.count('\n')
                 if _linefeeds > 1:
                     _stats['paragraphs'] += 1
                 _stats['non_blank_lines'] += 1
                 _stats['lines'] += _linefeeds
                 _stats['whitespaces'] += len(p)
-            elif q:  # r'\s'; note that bool(' ') is True
+            elif p:  # r'\s'
                 _stats['whitespaces'] += 1
-            elif r: # r'.'
+            elif q: # r'.'
                 _stats['others'] += 1
-        _linefeeds_at_EOF: int = _groups[-1][7].count('\n')
+
+        _linefeeds_at_EOF: int = _groups[-1][6].count('\n')
         if _linefeeds_at_EOF == 0:
             _stats['paragraphs'] += 1
             _stats['non_blank_lines'] += 1
@@ -154,10 +159,16 @@ def statistics(
     message = str(stats)
 
     if verbose:
-        message += '\n\n' + '\n'.join((
-            f"DETAILS\n{'=' * 40}\n",
-            *(str(i) for i in inventory)
-        ))
+        message += (
+            '\n'
+            '\n'
+            '\n'
+            f'DETAILS\n'
+            f'{stats.seps}'
+            '\n'
+            '\n'
+            '\n\n'.join(str(i) for i in inventory)
+        )
 
     print(message)
 
@@ -189,10 +200,10 @@ class _Help:
     """
 
 
-@Pavlov()
-def main():
+@pavlov
+def main(args: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser('Stats')
-    parser.add_argument('path', help=_Help.path)
+    parser.add_argument('path', nargs='?', help=_Help.path)
     parser.add_argument(
         '-i',
         '--include',
@@ -202,7 +213,7 @@ def main():
         metavar=''
     )
     parser.add_argument(
-        '-e',
+        '-x',
         '--exclude',
         action='extend',
         nargs='+',
@@ -222,14 +233,14 @@ def main():
         help=_Help.verbose
     )
 
-    args = parser.parse_args()
+    options = parser.parse_args(args)
 
     statistics(
-        args.path,
-        args.include,
-        args.exclude,
-        args.recursive,
-        args.verbose
+        options.path,
+        options.include,
+        options.exclude,
+        options.recursive,
+        options.verbose
     )
 
 
