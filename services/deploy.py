@@ -3,14 +3,14 @@ import subprocess
 import sys
 import venv
 
-from models.consts import DOTFILES, HOME, ROOT
+from models.consts import DOTFILES, HOME, SERVICES
 
 VENV_NAME = 'ink'
 
 
 def main() -> None:
 
-    root = ROOT.as_posix()
+    services = SERVICES.as_posix()
 
     while True:
         reply = input('Install PyYAML(dependency)? [y/n]: ').lower()
@@ -30,7 +30,8 @@ def main() -> None:
     while os.name == 'nt':
         reply = input('Install Chocolatey? [y/n]: ').lower()
         if reply.startswith('y'):
-            subprocess.run(f'powershell "{root}/services/choco-install.ps1"')
+            subprocess.run(f'powershell {services}/choco-install.ps1')
+            subprocess.run(f'powershell {services}/choco-packages.ps1')
             break
         elif reply.startswith('n'):
             break
@@ -55,7 +56,7 @@ def main() -> None:
             if not dir.exists():
                 venv.main([str(dir)])
             subprocess.run(
-                f'{dir}/Scripts/pip install -r {root}/requirements.txt'
+                f'{dir}/Scripts/pip install -r {services}/requirements.txt'
             )
             break
         elif reply.startswith('n'):
