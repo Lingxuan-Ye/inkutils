@@ -1,16 +1,14 @@
 # ================================================================
 # Template Injection
 # ----------------------------------------------------------------
-# - $dir should be a Posix-style path with no trailing '/'
+# - `$root` should be a Posix-style path with no trailing '/'
 # - Do not remove 'TAG' comment!
 # ================================================================
 
 USERNAME={% config user.name %}
 NICKNAME={% config user.alias %}
 root={% root %}
-
 # stop
-
 scripts="${root}/scripts"
 library="${root}/library"
 

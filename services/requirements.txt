@@ -1,0 +1,16 @@
+json5
+jupyter
+matplotlib
+mypy
+numpy
+pandas
+pyperclip
+PyYAML
+requests
+scikit-learn
+scipy
+seaborn
+sympy
+types-PyYAML
+viztracer
+yapf
