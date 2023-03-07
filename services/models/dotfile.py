@@ -76,6 +76,8 @@ class DotfileDeployer:
             for line in src:
                 if self.__stop_parsing.fullmatch(line):
                     break
+                if line.lstrip().startswith('#'):
+                    continue
                 to.write(self._line_inject(line))
             for line in src:
                 to.write(line)
